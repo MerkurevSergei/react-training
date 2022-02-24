@@ -14,33 +14,57 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squares: Array(9).fill(null),
+      squares: Array(100).fill(null),
       xIsNext: true
     };
   }
 
-  handleClick(i) {
-    const squares = this.state.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
+  componentDidMount() {
+    const apiUrl = 'http://localhost:8080/machines';
+    fetch(apiUrl, {
+      headers: {
+        'Accept': 'application/json',
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => this.initBoard(data));
+  }
+
+  initBoard(data) {
+    console.log(data)
+    for (let i = 0; i < data.length; i++) {
+      this.state.squares[10 * (data[i].location.y - 1) + data[i].location.x - 1] = 'O'
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      squares: squares,
-      xIsNext: !this.state.xIsNext,
-    });
-}
+  }
+
+  renderBoard() {
+    for (let i = 0; i < 10; i++) {
+      <div className="board-row">
+        {this.renderBoardRow(i)}
+      </div>
+    }
+  }
+
+  renderBoardRow(i) {
+    for (let j = 0; j < 10; j++) {
+      this.renderSquare(10*j + i);
+    }
+  }
 
   renderSquare(i) {
     return (
       <Square
-          value={this.state.squares[i]}
-          onClick={() => this.handleClick(i)}
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
       />
     );
   }
 
   render() {
+    console.log(this.state.squares)
     const winner = calculateWinner(this.state.squares);
     let status;
     if (winner) {
@@ -52,21 +76,7 @@ class Board extends React.Component {
     return (
       <div>
         <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {this.renderBoard()}
       </div>
     );
   }
