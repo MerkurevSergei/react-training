@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Main from './main';
 import Info from './info';
+import Control from './control';
 import './index.css';
 
 class App extends React.Component {
