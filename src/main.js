@@ -3,16 +3,20 @@ class Main extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        content: Array(10).fill(<div className="cell">cell</div>)
+        content: []
       };
     }
     
     componentDidMount() {
+      var rows = []
       for (let i = 0; i < this.props.height; i++) {
+        var row = []
         for (let j = 0; j < this.props.length; j++) {
-          this.state.content.push(<div className="cell">cell</div>)
+          row.push(<div className="cell">{i*10 + j}</div>)
         }
-      }     
+        rows.push(<div className="row">{row}</div>)
+      }
+      this.setState({content: rows})
     }  
 
     render() {

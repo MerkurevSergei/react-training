@@ -4,6 +4,7 @@ import Main from './main';
 import Info from './info';
 import Control from './control';
 import './index.css';
+import './main.css';
 
 class App extends React.Component {
   render() {
