@@ -1,31 +1,69 @@
 import React from 'react';
-class Main extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        content: []
-      };
-    }
-    
-    componentDidMount() {
-      var rows = []
-      for (let i = 0; i < this.props.height; i++) {
-        var row = []
-        for (let j = 0; j < this.props.length; j++) {
-          row.push(<div className="cell">{i*10 + j}</div>)
-        }
-        rows.push(<div className="row">{row}</div>)
-      }
-      this.setState({content: rows})
-    }  
 
-    render() {
-      return (
-        <div className="main-panel">
-          {this.state.content}
-        </div>
-      );
-    }
+class Cell extends React.Component {
+  render() {
+    return (<div className="cell color-black">{this.props.value}</div>);
+  }
+}
+
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      content: [],
+      data: new Map()
+    };
   }
 
-  export default Main;
+  componentDidMount() {
+    this.renderBoard()
+    this.fetchData()
+  }
+
+  renderBoard() {
+    var rows = []
+    for (let i = 0; i < this.props.height; i++) {
+      var row = []
+      for (let j = 0; j < this.props.length; j++) {
+        let key = i * 10 + j;
+        row.push(<Cell value={this.state.data.get(key)} />)
+      }
+      rows.push(<div className="row">{row}</div>)
+    }
+    this.setState({ content: rows })
+  }
+
+  fetchData() {
+    const apiUrl = 'http://localhost:8080/machines';
+    fetch(apiUrl, {
+      headers: {
+        'Accept': 'application/json',
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+      .then((response) => response.json())
+      .then((response) => {this.updateData(response)});
+    
+  }
+
+  updateData(response) {
+    let result = new Map();
+    response.forEach(el => {
+      let key = (el.location.y - 1) * 10 + el.location.x - 1;
+      result.set(key, el)
+    }); 
+    this.setState({data : result})
+  }
+
+  render() {
+    return (
+      <div className="main-panel">
+        {this.state.content}
+      </div>
+    );
+  }
+}
+
+export default Main;
