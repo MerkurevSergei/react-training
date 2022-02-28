@@ -1,17 +1,13 @@
 import React from 'react';
 
 class Cell extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: this.props.data
-    };
-  }
-
   render() {
     let key = this.props.k;
-    let data = this.state.data;
-    return (<div className="cell color-black" key={key}>{data.get(data)}</div>);
+    let data = this.props.data;
+    let value = data.get(key);
+    if (value == undefined) value = "";
+    console.log(value)
+    return (<div className="cell color-black" key={key}>{value.id}</div>);
   }
 }
 
@@ -25,7 +21,6 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    this.renderBoard()
     this.fetchData()
   }
 
@@ -63,6 +58,7 @@ class Main extends React.Component {
       result.set(key, el)
     }); 
     this.setState({data : result})
+    this.renderBoard()
   }
 
   render() {
