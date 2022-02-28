@@ -11,7 +11,7 @@ class App extends React.Component {
     return (
       <div className="app">
         <div className="left-side">
-          <Main length="10" height="10"/>
+          <Main length="10" height="10" onClick={() => this.setState({a: 1})} />
           <Info />
         </div>
         <div className="right-side">

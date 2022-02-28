@@ -1,8 +1,17 @@
 import React from 'react';
 
 class Cell extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: this.props.data
+    };
+  }
+
   render() {
-    return (<div className="cell color-black">{this.props.value}</div>);
+    let key = this.props.k;
+    let data = this.state.data;
+    return (<div className="cell color-black" key={key}>{data.get(data)}</div>);
   }
 }
 
@@ -26,9 +35,9 @@ class Main extends React.Component {
       var row = []
       for (let j = 0; j < this.props.length; j++) {
         let key = i * 10 + j;
-        row.push(<Cell value={this.state.data.get(key)} />)
+        row.push(<Cell k={key} data={this.state.data} />)
       }
-      rows.push(<div className="row">{row}</div>)
+      rows.push(<div className="row" key={i}>{row}</div>)
     }
     this.setState({ content: rows })
   }
@@ -45,7 +54,6 @@ class Main extends React.Component {
     })
       .then((response) => response.json())
       .then((response) => {this.updateData(response)});
-    
   }
 
   updateData(response) {
